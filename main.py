@@ -897,32 +897,47 @@ for event in longpoll.listen():
                         for user_issued in sql.execute(f"SELECT issued FROM access WHERE login = '{user_card_number}'"):
                             user_card_issued = user_issued[0]
                             if user_card_access == 'ADMIN':
-                                if event.from_user:
-                                    iddd = event.user_id
-                                    for admins_card in sql.execute(f"SELECT admins FROM access WHERE login = '{iddd}'"):
-                                        adminnss = admins_card[0]
-                                        for workerss_cardd in sql.execute(f"SELECT workers FROM access WHERE login = '{iddd}'"):
-                                            workerrss = workerss_cardd[0]
-                                            sql.execute(f"UPDATE users SET nick = '{new_nick}' WHERE login = '{idd}'")
-                                            db.commit()
-                                            vk.messages.send(
-                                                user_id=event.user_id,
-                                                message=f'Ваша должность: 丹亼从仈卄\nВы успешно изменили ник владельца карты НЯ{idd}\nНовый ник: {new_nick}\nЗа все время вы назначили:\nАдминов: {adminnss}\nРаботников: {workerrss}',
-                                                random_id=0
-                                            )
-                                elif event.from_chat:
-                                    iddd = event.user_id
-                                    for admins_card in sql.execute(f"SELECT admins FROM access WHERE login = '{iddd}'"):
-                                        adminnss = admins_card[0]
-                                        for workerss_cardd in sql.execute(f"SELECT workers FROM access WHERE login = '{iddd}'"):
-                                            workerrss = workerss_cardd[0]
-                                            sql.execute(f"UPDATE users SET nick = '{new_nick}' WHERE login = '{idd}'")
-                                            db.commit()
-                                            vk.messages.send(
-                                                chat_id=event.chat_id,
-                                                message=f'Ваша должность: 丹亼从仈卄\nВы успешно изменили ник владельца карты НЯ{idd}\nНовый ник: {new_nick}\nЗа все время вы назначили:\nАдминов: {adminnss}\nРаботников: {workerrss}',
-                                                random_id=0
-                                            )
+                                sql.execute(f"SELECT login FROM users WHERE login = '{user_login}'")
+                                if sql.fetchone() is None:
+                                    if event.from_user:
+                                        vk.messages.send(
+                                            user_id=event.user_id,
+                                            message='Вы неверно ввели номер карты человека',
+                                            random_id=0
+                                        )
+                                    elif event.from_chat:
+                                        vk.messages.send(
+                                            chat_id=event.chat_id,
+                                            message='Вы неверно ввели номер карты человека',
+                                            random_id=0
+                                        )
+                                else:
+                                    if event.from_user:
+                                        iddd = event.user_id
+                                        for admins_card in sql.execute(f"SELECT admins FROM access WHERE login = '{iddd}'"):
+                                            adminnss = admins_card[0]
+                                            for workerss_cardd in sql.execute(f"SELECT workers FROM access WHERE login = '{iddd}'"):
+                                                workerrss = workerss_cardd[0]
+                                                sql.execute(f"UPDATE users SET nick = '{new_nick}' WHERE login = '{idd}'")
+                                                db.commit()
+                                                vk.messages.send(
+                                                    user_id=event.user_id,
+                                                    message=f'Ваша должность: 丹亼从仈卄\nВы успешно изменили ник владельца карты НЯ{idd}\nНовый ник: {new_nick}\nЗа все время вы назначили:\nАдминов: {adminnss}\nРаботников: {workerrss}',
+                                                    random_id=0
+                                                )
+                                    elif event.from_chat:
+                                        iddd = event.user_id
+                                        for admins_card in sql.execute(f"SELECT admins FROM access WHERE login = '{iddd}'"):
+                                            adminnss = admins_card[0]
+                                            for workerss_cardd in sql.execute(f"SELECT workers FROM access WHERE login = '{iddd}'"):
+                                                workerrss = workerss_cardd[0]
+                                                sql.execute(f"UPDATE users SET nick = '{new_nick}' WHERE login = '{idd}'")
+                                                db.commit()
+                                                vk.messages.send(
+                                                    chat_id=event.chat_id,
+                                                    message=f'Ваша должность: 丹亼从仈卄\nВы успешно изменили ник владельца карты НЯ{idd}\nНовый ник: {new_nick}\nЗа все время вы назначили:\nАдминов: {adminnss}\nРаботников: {workerrss}',
+                                                    random_id=0
+                                                )
                             else:
                                 if event.from_user:
                                     vk.messages.send(
