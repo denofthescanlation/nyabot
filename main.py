@@ -32,7 +32,7 @@ sql.execute("""CREATE TABLE IF NOT EXISTS operation (
 
 db.commit()
 
-token = os.environ('BOT_TOKEN')
+token = os.environ.get('BOT_TOKEN')
 
 global vk_session
 global vk
